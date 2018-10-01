@@ -90,9 +90,9 @@ class AudioDataset():
                                                   zero_padding=True);
         # # Extracting power spectrum (choosing 3 seconds and elimination of DC)
         power_spectrum = speechpy.processing.power_spectrum(frames, fft_points=2 * num_coefficient)[:, 1:]
-        logenergy = speechpy.feature.lmfe(signal, sampling_frequency=fs, frame_length=0.025, frame_stride=0.01,
+        logenergy = speechpy.feature.mfcc(signal, sampling_frequency=fs, frame_length=0.025, frame_stride=0.01,
                                           num_filters=num_coefficient, fft_length=1024, low_frequency=0,
-                                          high_frequency=None)
+                                          high_frequency=None, num_cepstral = 40)
         ########################
         ### Handling sample ####
         ########################
@@ -100,14 +100,27 @@ class AudioDataset():
         # Label extraction
         labels = self.labels
 
+        print("logenergy")
+        print(logenergy)
+        print(len(logenergy))
+        print(logenergy.shape)
 
         index = 0
         list_sequence = []
         list_label = []
+        # print("\n --------------- logenergy[index:index+self.sequence_size*num_coefficient]")
+        # print(logenergy[index:index+self.sequence_size*num_coefficient])
+        # print(len(logenergy[index:index+self.sequence_size*num_coefficient]))
+        # print(len(logenergy))
+        print('***************')
+        print(len(logenergy[0]))
         while index + self.sequence_size < logenergy.shape[0]:
-            list_sequence.append(logenergy[index:index+self.sequence_size,:].reshape((1,self.sequence_size,num_coefficient,1)).astype(np.float32))
+            vector = logenergy[index:index+self.sequence_size,:]
+            print("lalal {0}".format(len(vector)))
+            print("lololo {0}".format(len(vector.reshape((1,self.sequence_size,num_coefficient,1)))))
+            list_sequence.append(vector.reshape((1,self.sequence_size,num_coefficient,1)))
             list_label.append(np.array((labels[idx]), dtype=np.int32))
-            index+= self.sequence_size
+            index+= self.sequence_size 
         return list_sequence, list_label
 
 
