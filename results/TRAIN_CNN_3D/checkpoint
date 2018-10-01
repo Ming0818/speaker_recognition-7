@@ -1,0 +1,4 @@
+model_checkpoint_path: "train_logs-345"
+all_model_checkpoint_paths: "train_logs-115"
+all_model_checkpoint_paths: "train_logs-230"
+all_model_checkpoint_paths: "train_logs-345"

@@ -105,8 +105,8 @@ class AudioDataset():
         list_sequence = []
         list_label = []
         while index + self.sequence_size < logenergy.shape[0]:
-            list_sequence.append(logenergy[index:index+self.sequence_size,:].reshape((1,self.sequence_size,num_coefficient)))
-            list_label.append(labels[idx])
+            list_sequence.append(logenergy[index:index+self.sequence_size,:].reshape((1,self.sequence_size,num_coefficient,1)).astype(np.float32))
+            list_label.append(np.array((labels[idx]), dtype=np.int32))
             index+= self.sequence_size
         return list_sequence, list_label
 
@@ -232,6 +232,28 @@ if __name__ == '__main__':
     labels_dev = labels_dev.reshape(labels_dev.shape[0],)
     labels_test = labels_test.reshape(labels_test.shape[0],)
 
+    print("labels_dev {0} utterrance_dev {1}".format(labels_dev.shape,utterrance_dev.shape))
+    utterrance_dev_copy = utterrance_dev.copy()
+    labels_dev_copy = labels_dev.copy()
+    idx = np.random.randint(labels_dev.shape[0], size=labels_dev.shape[0])
+    print("idx {0}".format(idx))
+    for num, index in enumerate(idx):
+        print("num {0} index {1}".format(num,index))
+        utterrance_dev_copy[num, :, :, :] = utterrance_dev[index, :, :,:]
+        labels_dev[num] = labels_dev_copy[index]
+
+
+    print("labels_test {0} utterrance_test {1}".format(labels_test.shape,utterrance_test.shape))
+    utterrance_test_copy = utterrance_test.copy()
+    labels_test_copy = labels_test.copy()
+    idx = np.random.randint(labels_test.shape[0], size=labels_test.shape[0])
+    print("idx {0}".format(idx))
+    for num, index in enumerate(idx):
+        print("num {0} index {1}".format(num,index))
+        utterrance_test_copy[num, :, :, :] = utterrance_test[index, :, :,:]
+        labels_test[num] = labels_test_copy[index]
+
+
     print('\n \n \n ---- END process')
     print(labels_test)
 
@@ -239,6 +261,7 @@ if __name__ == '__main__':
     print(labels_test.shape)    
     print(utterrance_dev.shape)
     print(utterrance_test.shape)
+
 
 
 
